@@ -1,0 +1,36 @@
+name: Deploy To-Do App to EC2
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Upload To-do-list to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_KEY }}
+          source: "To-do-list/*"
+          target: "~/todo"
+
+      - name: SSH and deploy Docker container
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_KEY }}
+          script: |
+            cd ~/todo
+            docker stop todo-app || true
+            docker rm todo-app || true
+            docker build -t todo-image .
+            docker run -d --name todo-app -p 3000:80 todo-image
+ 
