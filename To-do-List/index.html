@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>TO-DO List</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap" rel="stylesheet">
+    <style>
+      body {
+        font-family: 'Shadows Into Light', cursive;
+      }
+    </style>
+  </head>
+  <body class="bg-gradient-to-br from-yellow-100 via-purple-100 to-yellow-50 min-h-screen flex items-center justify-center p-6">
+    <div class="backdrop-blur-md bg-white/40 border border-white/30 shadow-xl rounded-[2rem] p-6 w-full max-w-md">
+      <!-- Header -->
+      <div class="text-center mb-6">
+        <h1 class="text-4xl font-bold text-purple-700 drop-shadow-md">My To-Do's</h1>
+      </div>
+
+      <!-- Input form -->
+      <div class="flex space-x-2 mb-4">
+        <input
+          type="text"
+          id="input-box"
+          name="input_box"
+          placeholder="Add Task..."
+          class="flex-grow p-3 rounded-xl border border-yellow-300 shadow-inner focus:outline-none focus:ring-2 focus:ring-yellow-400 bg-yellow-50 placeholder:text-yellow-600 text-yellow-800"
+        />
+        <button
+          onclick="addTask()"
+          id="input-button"
+          class="px-4 py-2 bg-purple-500 text-white rounded-xl shadow-md hover:bg-purple-600 transition-all duration-300"
+        >Add</button>
+      </div>
+
+      <!-- Task List -->
+      <h2 class="text-lg font-semibold text-yellow-700 mb-2">Tasks</h2>
+      <ul id="list-container" class="space-y-3">
+        <!-- Tasks will appear here -->
+      </ul>
+
+      <!-- Counters -->
+      <div class="mt-6 text-sm text-purple-800">
+        Completed: <span id="Completed-counter">0</span> | Uncompleted:
+        <span id="Uncompleted-counter">0</span>
+      </div>
+    </div>
+
+    <script>
+      function addTask() {
+        const inputBox = document.getElementById("input-box");
+        const listContainer = document.getElementById("list-container");
+        const taskText = inputBox.value.trim();
+        if (taskText === "") return;
+
+        const li = document.createElement("li");
+        li.className =
+          "flex justify-between items-center bg-yellow-50 border border-yellow-200 rounded-xl p-3 shadow-md animate-fade-in-down transition-all duration-300 ease-in-out";
+
+        const taskContent = document.createElement("span");
+        taskContent.textContent = taskText;
+        taskContent.className = "text-yellow-800";
+
+        const buttons = document.createElement("div");
+        buttons.className = "space-x-2";
+
+        const completeBtn = document.createElement("button");
+        completeBtn.textContent = "✔";
+        completeBtn.className = "text-green-500 hover:scale-110 transform transition-transform duration-200";
+        completeBtn.onclick = () => {
+          taskContent.classList.toggle("line-through");
+          taskContent.classList.toggle("text-gray-400");
+          updateCounters();
+        };
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "🗑";
+        deleteBtn.className = "text-red-400 hover:scale-110 transform transition-transform duration-200";
+        deleteBtn.onclick = () => {
+          li.classList.add("opacity-0", "scale-90");
+          setTimeout(() => {
+            li.remove();
+            updateCounters();
+          }, 300);
+        };
+
+        buttons.appendChild(completeBtn);
+        buttons.appendChild(deleteBtn);
+        li.appendChild(taskContent);
+        li.appendChild(buttons);
+        listContainer.appendChild(li);
+
+        inputBox.value = "";
+        updateCounters();
+      }
+
+      function updateCounters() {
+        const listItems = document.querySelectorAll("#list-container li");
+        let completed = 0;
+        let uncompleted = 0;
+
+        listItems.forEach((li) => {
+          const isCompleted = li.querySelector("span").classList.contains("line-through");
+          isCompleted ? completed++ : uncompleted++;
+        });
+
+        document.getElementById("Completed-counter").textContent = completed;
+        document.getElementById("Uncompleted-counter").textContent = uncompleted;
+      }
+    </script>
+
+    <style>
+      @keyframes fade-in-down {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .animate-fade-in-down {
+        animation: fade-in-down 0.3s ease-out;
+      }
+    </style>
+  </body>
+</html>
