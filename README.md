@@ -1,1 +1,1 @@
-trigger deploy
+new trigger
