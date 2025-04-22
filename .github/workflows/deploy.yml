@@ -39,6 +39,7 @@ jobs:
           key: ${{ secrets.EC2_KEY }}
           script: |
             cd ~/todo
+            cd To-do-List
             docker stop todo-app || true
             docker rm todo-app || true
             docker build -t todo-image .
